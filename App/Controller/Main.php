@@ -44,6 +44,11 @@ class Main
         wp_enqueue_style(WDRT_PLUGIN_SLUG . '-admin', WDRT_PLUGIN_URL . 'Assets/Css/wdrt_admin.css', array(), WDRT_PLUGIN_VERSION . '&t=' . time());
         wp_enqueue_script(WDRT_PLUGIN_SLUG . '-admin', WDRT_PLUGIN_URL . 'Assets/Js/wdrt_admin'.$suffix.'.js', array('jquery'), WDRT_PLUGIN_VERSION . '&t=' . time());
 
+        wp_localize_script(WDRT_PLUGIN_SLUG . '-admin', 'wdrt_localize_data', array(
+            'common_nonce' => wp_create_nonce('wdrt_common_nonce'),
+            'ajax_url' => admin_url('admin-ajax.php'),
+        ));
+
     }
 
     protected function getActivePlugins()
