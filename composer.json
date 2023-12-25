@@ -1,0 +1,20 @@
+{
+  "name": "woo-discount-rules/woo-discount-translate",
+  "description": "Plugin used to translate dynamic input string for Woo Discount Rules and related add-on",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Ilaiyaraja",
+      "email": "ilayaraja@cartrabbit.in"
+    }
+  ],
+  "require": {
+    "yahnis-elsts/plugin-update-checker": ">=v5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "WDRT\\": ""
+    }
+  }
+}
