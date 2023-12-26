@@ -14,7 +14,7 @@ wdrt = window.wdrt || {};
         alertify.set('notifier', 'position', 'top-right');
         let data = {
             action: 'wdrt_add_dynamic_string',
-            wlt_nonce: wdrt_localize_data.common_nonce
+            wdrt_nonce: wdrt_localize_data.common_nonce
         };
         wdrt_jquery('#wdrt_update_wpml_string').attr('disabled', true);
         wdrt_jquery.ajax({
@@ -27,9 +27,9 @@ wdrt = window.wdrt || {};
             },
             success: function (json) {
                 if (json.success) {
-                    alertify.success(json.message);
+                    alertify.success(json.data.message);
                 } else {
-                    alertify.error(json.message);
+                    alertify.error(json.data.message);
                 }
                 wdrt_jquery('#wdrt_update_wpml_string').removeAttr('disabled');
             }

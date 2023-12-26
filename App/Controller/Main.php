@@ -116,12 +116,54 @@ class Main
 
     function getRuleStrings(&$new_custom_strings)
     {
-
+        if (class_exists('WDR\Core\Models\Custom\AdminRule')){
+            $admin_rule = new \WDR\Core\Models\Custom\AdminRule();
+            $rules = $admin_rule->getAll('*');
+            $allowed_string = array('title','description');
+            foreach ($rules as $rule){
+                if(!is_object($rule) || !isset($rule->discount_type)){
+                    continue;
+                }
+                $this->getBasicTranslation($rule,$allowed_string,$new_custom_strings);
+            }
+        }
     }
-
+    protected function getBasicTranslation($object, $allowed_strings, &$new_custom_strings)
+    {
+        if (!is_object($object) || !is_array($allowed_strings)) {
+            return new \stdClass();
+        }
+        foreach ($allowed_strings as $key) {
+            if (!in_array($key, $new_custom_strings) && isset($object->$key) && !empty($object->$key)) {
+                $new_custom_strings[] = $object->$key;
+            }
+        }
+    }
     function addWPMLCustomString()
     {
-
+        $result = array('success'=>false,'data'=>array());
+        $input_helper =new \WDR\Core\Helpers\Input();
+        $nonce = $input_helper::get('wdrt_nonce');
+        if (!current_user_can('manage_woocommerce') || !wp_verify_nonce($nonce, 'wdrt_common_nonce')){
+            $result['data']['message'] = __('Security check validation failed', 'woo-discount-translate');
+            wp_send_json($result);
+        }
+        if (!has_action('wpml_register_single_string')) {
+            $result['data']['message'] = __('WPML translation action not found', 'woo-discount-translate');
+            wp_send_json($result);
+        }
+        $domains = apply_filters('wdrt_dynamic_string_domain', array('woo-discount-rules'));
+        foreach ($domains as $domain) {
+            $new_custom_strings = $this->getDynamicStrings($domain);
+            if (!empty($new_custom_strings)) {
+                foreach ($new_custom_strings as $key) {
+                    do_action('wpml_register_single_string', $domain, md5($key), $key);
+                }
+            }
+        }
+        $result['success'] = true;
+        $result['data']['message'] = __('Update WPML translation successfully', 'woo-discount-translate');
+        wp_send_json($result);
     }
 
 }

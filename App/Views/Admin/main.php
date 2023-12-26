@@ -5,7 +5,6 @@
  * @link        https://www.flycart.org
  * */
 defined('ABSPATH') or die;
-$is_wpml_translate_string_available = true;
 ?>
 <div id="wdrt-main">
     <div class="wdrt-main-header">

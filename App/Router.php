@@ -22,7 +22,7 @@ class Router
             }
             //wpml
             if (self::$main->isPluginActive('wpml-string-translation/plugin.php')) {
-                add_action('wp_ajax_wlt_add_dynamic_string', array(self::$main, 'addWPMLCustomString'));
+                add_action('wp_ajax_wdrt_add_dynamic_string', array(self::$main, 'addWPMLCustomString'));
             }
         }
     }
