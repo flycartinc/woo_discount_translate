@@ -9,8 +9,7 @@ class Router
     private static $main;
     function init(){
         self::$main = empty(self::$main) ? new Main() : self::$main;
-        //TODO: add into addon list
-
+        add_filter('wdr_addon_list',[self::$main,'getAppDetails']);
         if (is_admin()){
             remove_all_actions('admin_notices');
             add_action('admin_menu',[self::$main,'adminMenu']);

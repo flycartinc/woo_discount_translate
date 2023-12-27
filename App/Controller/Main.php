@@ -50,6 +50,22 @@ class Main
         ));
 
     }
+    public function getAppDetails($addons){
+        if (!is_array($addons)){
+            return $addons;
+        }
+        $addons['woo_discount_translate'] = [
+                'name' => 'Woo Discount Translate',
+                'description' => '',
+                'icon_url' => 'https://cdn.jsdelivr.net/gh/flycartinc/wdr-addons@master/icons/woo_discount_translate.png',
+                'product_url' => '',
+                'page_url' => admin_url('admin.php?page=woo-discount-translate'),
+                'settings_url' => '',
+                'is_external' => true,
+                'plugin_file' => 'woo-discount-translate/woo-discount-translate.php',
+            ];
+        return $addons;
+    }
 
     protected function getActivePlugins()
     {
