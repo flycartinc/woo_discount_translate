@@ -1,0 +1,68 @@
+# Copyright (C) 2024 Flycart
+# This file is distributed under the GPL v3 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Woo Discount Rules - Multi-Lingual Compatibility - Dynamic Strings 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-discount-translate\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-01-25T14:42:32+05:30\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.9.0\n"
+"X-Domain: woo-discount-translate\n"
+
+#. Plugin Name of the plugin
+msgid "Woo Discount Rules - Multi-Lingual Compatibility - Dynamic Strings"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://www.wployalty.net"
+msgstr ""
+
+#. Description of the plugin
+msgid "This add-on used to translate dynamic string for Woo Discount Rules and related add-on"
+msgstr ""
+
+#. Author of the plugin
+msgid "Flycart"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.flycart.org"
+msgstr ""
+
+#: App/Controller/Main.php:16
+msgid "Woo Discount Translate"
+msgstr ""
+
+#: App/Controller/Main.php:167
+msgid "Security check validation failed"
+msgstr ""
+
+#: App/Controller/Main.php:171
+msgid "WPML translation action not found"
+msgstr ""
+
+#: App/Controller/Main.php:184
+msgid "Update WPML translation successfully"
+msgstr ""
+
+#: App/Views/Admin/main.php:17
+msgid "Loco Translate:"
+msgstr ""
+
+#: App/Views/Admin/main.php:20
+#: App/Views/Admin/main.php:28
+msgid "You can now translate the dynamic content like rules title, descriptions easily."
+msgstr ""
+
+#: App/Views/Admin/main.php:25
+msgid "WPML Translate:"
+msgstr ""
+
+#: App/Views/Admin/main.php:33
+msgid "Update Dynamic String for WPML"
+msgstr ""
