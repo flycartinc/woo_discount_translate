@@ -134,7 +134,10 @@ class Main
     {
         if (class_exists('WDR\Core\Models\Custom\AdminRule')){
             $admin_rule = new \WDR\Core\Models\Custom\AdminRule();
-            $rules = $admin_rule->getAll('*');
+            $table_name =$admin_rule::getTableName();
+            $query = "SELECT * FROM {$table_name}";
+            global $wpdb;
+            $rules = $wpdb->get_results($query, ARRAY_A);
             $allowed_string = array('title','description');
             foreach ($rules as $rule){
                 if(!is_object($rule) || !isset($rule->discount_type)){
