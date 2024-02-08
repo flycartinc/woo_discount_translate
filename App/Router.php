@@ -9,10 +9,9 @@ class Router
     private static $main;
     function init(){
         self::$main = empty(self::$main) ? new Main() : self::$main;
-        add_filter('wdr_addon_list',[self::$main,'getAppDetails']);
         if (is_admin()){
             remove_all_actions('admin_notices');
-            add_action('admin_menu',[self::$main,'adminMenu']);
+            add_action('wdr_addons_page',[self::$main,'managePages']);
             add_action('admin_enqueue_scripts',[self::$main,'adminScripts'],100);
 
             //loco translate

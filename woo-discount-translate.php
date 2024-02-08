@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:         Woo Discount Rules - Multi-Lingual Compatibility - Dynamic Strings
- * Plugin URI:          https://www.wployalty.net
- * Description:         This add-on used to translate dynamic string for Woo Discount Rules and related add-on
+ * Plugin URI:          https://www.flycart.org
+ * Description:         This add-on used to translate dynamic string for Woo Discount Rules and related add-on.
  * Version:             1.0.0
  * Requires at least:   5.3
  * Requires PHP:        5.6
@@ -34,7 +34,7 @@ if (!function_exists('isDiscountRulesActive')) {
         if (is_multisite()) {
             $active_plugins = array_merge($active_plugins, get_site_option('active_sitewide_plugins', array()));
         }
-        return in_array('woo-discount-rules/woo-discount-rules.php', $active_plugins, false);
+        return in_array('woo-discount-rules-pro/woo-discount-rules-pro.php', $active_plugins, false) || in_array('woo-discount-rules/woo-discount-rules.php', $active_plugins, false);
     }
 }
 

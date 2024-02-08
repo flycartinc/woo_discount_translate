@@ -3,19 +3,13 @@
 namespace WDRT\App\Controller;
 
 use WDR\Core\Helpers\Input;
-use WDR\Core\Helpers\Template;
+use WDR\Core\Helpers\Util;
 
 defined("ABSPATH") or die();
 class Main
 {
     protected static $active_plugin_list = array();
 
-    function adminMenu()
-    {
-        if (current_user_can('manage_woocommerce')) {
-            add_menu_page(__('Woo Discount Translate', 'woo-discount-translate'), __('Woo Discount Translate', 'woo-discount-translate'), 'manage_woocommerce', WDRT_PLUGIN_SLUG, [$this,'managePages'], 'dashicons-megaphone', 57);
-        }
-    }
     public function managePages()
     {
         $view = (string)Input::get('view', 'wdr-translate');
@@ -24,8 +18,7 @@ class Main
             'is_wpml_translate_string_available' => $this->isPluginActive('wpml-string-translation/plugin.php')
         );
         $path = WDRT_PLUGIN_PATH . 'App/Views/Admin/main.php';
-        $template = new Template();
-        $template->setData($path, $params)->display();
+        Util::renderTemplate($path, $params);
     }
     public function adminScripts(){
         if (!current_user_can('manage_woocommerce')) {
@@ -57,7 +50,7 @@ class Main
         $addons['woo_discount_translate'] = [
                 'name' => 'Woo Discount Translate',
                 'description' => '',
-                'icon_url' => 'https://cdn.jsdelivr.net/gh/flycartinc/wdr-addons@master/icons/woo_discount_translate.png',
+                'icon_url' => 'https://cdn.jsdelivr.net/gh/flycartinc/wdr-addons@master/icons/woo-discount-translate.png',
                 'product_url' => '',
                 'page_url' => admin_url('admin.php?page=woo-discount-translate'),
                 'settings_url' => '',
