@@ -12,7 +12,7 @@ class Main
 
     public function managePages()
     {
-        $view = (string)Input::get('view', 'wdr-translate');
+        $view = (string)Input::get('addon', '');
         $params = array(
             'current_view' => $view,
             'is_wpml_translate_string_available' => $this->isPluginActive('wpml-string-translation/plugin.php')

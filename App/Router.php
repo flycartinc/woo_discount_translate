@@ -2,6 +2,7 @@
 
 namespace WDRT\App;
 use WDRT\App\Controller\Main;
+use WDR\Core\Helpers\Input;
 
 defined("ABSPATH") or die();
 class Router
@@ -10,6 +11,10 @@ class Router
     function init(){
         self::$main = empty(self::$main) ? new Main() : self::$main;
         if (is_admin()){
+            $view = (string)Input::get('addon', '');
+            if ($view != 'woo_discount_translate'){
+                return;
+            }
             remove_all_actions('admin_notices');
             add_action('wdr_addons_page',[self::$main,'managePages']);
             add_action('admin_enqueue_scripts',[self::$main,'adminScripts'],100);
