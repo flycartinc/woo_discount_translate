@@ -1,8 +1,8 @@
-echo "Woo Discount Translate Auto Compress Pro pack"
+echo "Auto Compress pack"
 current_dir="$PWD/"
 echo "Current Dir $current_dir"
 pack_folder="woo-discount-translate"
-plugin_pack_folder="woo-discount-translate"
+plugin_pack_folder="woo_discount_translate"
 folder_sperate="/"
 pack_compress_folder=$current_dir$pack_folder
 replace_text_in_files() {
@@ -20,9 +20,9 @@ composer_run(){
 
 copy_folder(){
   echo "Compress Dir $pack_compress_folder"
-  from_folder="woo-discount-translate"
+  from_folder="woo_discount_translate"
   from_folder_dir=$current_dir$from_folder
-  move_dir=("App" "i18n" "vendor" "Assets" "readme.md" "woo-discount-translate.php")
+  move_dir=("App" "i18n" "vendor" "Assets" "readme.txt" "woo-discount-translate.php")
   if [ -d "$pack_compress_folder" ]
   then
       rm -r "$pack_folder"
