@@ -12,15 +12,14 @@ wdrt = window.wdrt || {};
 (function (wdrt) {
     wdrt_jquery(document).on('click', '#wdrt_update_wpml_string', function (e) {
         alertify.set('notifier', 'position', 'top-right');
-        let data = {
-            action: 'wdrt_add_dynamic_string',
-            wdrt_nonce: wdrt_localize_data.common_nonce
-        };
         wdrt_jquery('#wdrt_update_wpml_string').attr('disabled', true);
         wdrt_jquery.ajax({
             type: "POST",
             url: wdrt_localize_data.ajax_url,
-            data: data,
+            data: {
+                action: 'wdrt_add_dynamic_string',
+                wdrt_nonce: wdrt_localize_data.common_nonce
+            },
             dataType: "json",
             before: function () {
 

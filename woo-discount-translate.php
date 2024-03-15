@@ -18,9 +18,12 @@
  */
 
 defined("ABSPATH") or die();
-
+/**
+ * Check woocommerce plugin active or not.
+ */
 if (!function_exists('isWoocommerceActive')) {
-    function isWoocommerceActive(){
+    function isWoocommerceActive()
+    {
         $active_plugins = apply_filters('active_plugins', get_option('active_plugins', array()));
         if (is_multisite()) {
             $active_plugins = array_merge($active_plugins, get_site_option('active_sitewide_plugins', array()));
@@ -28,8 +31,12 @@ if (!function_exists('isWoocommerceActive')) {
         return in_array('woocommerce/woocommerce.php', $active_plugins, false) || array_key_exists('woocommerce/woocommerce.php', $active_plugins);
     }
 }
+/**
+ * Check Discount rules plugin active or not.
+ */
 if (!function_exists('isDiscountRulesActive')) {
-    function isDiscountRulesActive(){
+    function isDiscountRulesActive()
+    {
         $active_plugins = apply_filters('active_plugins', get_option('active_plugins', array()));
         if (is_multisite()) {
             $active_plugins = array_merge($active_plugins, get_site_option('active_sitewide_plugins', array()));
@@ -39,29 +46,42 @@ if (!function_exists('isDiscountRulesActive')) {
 }
 
 if (!isWoocommerceActive() || !isDiscountRulesActive()) return;
+
+if (!class_exists('\WDR\Core\Helpers\Plugin') && file_exists(WP_PLUGIN_DIR . '/woo-discount-rules/vendor/autoload.php')) {
+    require_once WP_PLUGIN_DIR . '/woo-discount-rules/vendor/autoload.php';
+} elseif (file_exists(WP_PLUGIN_DIR . '/woo-discount-rules-pro/vendor/autoload.php')) {
+    require_once WP_PLUGIN_DIR . '/woo-discount-rules-pro/vendor/autoload.php';
+}
+if (!class_exists('\WDR\Core\Helpers\Plugin')) {
+    return;
+}
+/**
+ * Check discount rules plugin is latest.
+ */
+if (!function_exists('isWooDiscountLatestVersion')) {
+    function isWooDiscountLatestVersion()
+    {
+        $db_version = get_option('wdr_version', '');
+        if (defined('WDR_PLUGIN_VERSION') && !empty($db_version)) {
+            return (version_compare($db_version, WDR_PLUGIN_VERSION, '>='));
+        }
+        return false;
+    }
+}
+if (!isWooDiscountLatestVersion()) return;
+
 defined('WDRT_PLUGIN_NAME') or define('WDRT_PLUGIN_NAME', 'Woo Discount Rules - Multi-Lingual Compatibility - Dynamic Strings');
 defined('WDRT_PLUGIN_VERSION') or define('WDRT_PLUGIN_VERSION', '1.0.0');
 defined('WDRT_PLUGIN_SLUG') or define('WDRT_PLUGIN_SLUG', 'woo-discount-translate');
 defined('WDRT_PLUGIN_URL') or define('WDRT_PLUGIN_URL', plugin_dir_url(__FILE__));
 defined('WDRT_PLUGIN_PATH') or define('WDRT_PLUGIN_PATH', __DIR__ . '/');
 
-/*add_action('before_woocommerce_init', function () {
-    if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
-        \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
-    }
-});*/
 if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
     return;
 }
 require __DIR__ . '/vendor/autoload.php';
 
-if (class_exists(\WDRT\App\Router::class)){
-    /*$updateChecker = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
-        'https://github.com/woo-discount-translate/woo-discount-translate',
-        __FILE__,
-        'woo-discount-translate'
-    );*/
-//    $updateChecker->getVcsApi()->enableReleaseAssets();
+if (class_exists(\WDRT\App\Router::class)) {
     $plugin = new \WDRT\App\Router();
     if (method_exists($plugin, 'init')) $plugin->init();
 }
