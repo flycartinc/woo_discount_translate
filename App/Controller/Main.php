@@ -14,10 +14,10 @@ class Main
      *
      * @return void
      */
-    public static function managePages()
+    public static function managePages($addon = '')
     {
+        if ($addon != 'woo_discount_translate') return;
         Util::renderTemplate(WDRT_PLUGIN_PATH . 'App/Views/Admin/main.php', array(
-            'current_view' => (string)Input::get('addon', ''),
             'is_wpml_translate_string_available' => (new \WDR\Core\Helpers\Plugin())::isActive('wpml-string-translation/plugin.php')
         ));
     }

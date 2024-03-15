@@ -17,7 +17,7 @@ class Router
     {
         if (is_admin()) {
             remove_all_actions('admin_notices');
-            add_action('wdr_addons_page', [Main::class, 'managePages']);
+            add_action('wdr_addons_page', [Main::class, 'managePages'], 10, 1);
             add_action('admin_enqueue_scripts', [Main::class, 'adminScripts']);
             //loco translate
             add_filter('loco_extracted_template', array(Main::class, 'addCustomString'), 10, 2);
