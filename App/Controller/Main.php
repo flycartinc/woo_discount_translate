@@ -62,10 +62,10 @@ class Main
     function addCustomString(\Loco_gettext_Extraction $extraction, $domain)
     {
         $plugin = new \WDR\Core\Helpers\Plugin();
-        if ($plugin::isActive('loco-translate/loco.php')) {
+        if (!$plugin::isActive('loco-translate/loco.php')) {
             return;
         }
-        $new_custom_strings = $this->getDynamicStrings($domain);
+        $new_custom_strings = (new Main())->getDynamicStrings($domain);
         if (empty($new_custom_strings)) {
             return;
         }
