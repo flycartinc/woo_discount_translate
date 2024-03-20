@@ -59,7 +59,7 @@ class Main
      * @param string $domain Text domain.
      * @return void
      */
-    function addCustomString(\Loco_gettext_Extraction $extraction, $domain)
+    static function addCustomString(\Loco_gettext_Extraction $extraction, $domain)
     {
         $plugin = new \WDR\Core\Helpers\Plugin();
         if (!$plugin::isActive('loco-translate/loco.php')) {
