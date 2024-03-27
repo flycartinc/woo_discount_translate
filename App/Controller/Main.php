@@ -103,7 +103,8 @@ class Main
         $options = get_option('wdr_settings');
         if (!is_array($options)) return;
         $allowed_strings = array('you_saved_text', 'table_title_column_name', 'table_discount_column_name', 'table_range_column_name',
-            'free_shipping_title', 'discount_label_for_combined_discounts', 'apply_cart_discount_as', 'show_strikeout_when',
+            'free_shipping_title', 'discount_label_for_combined_discounts', 'apply_cart_discount_as', 'show_strikeout_when', 'applied_rule_message',
+            'on_sale_badge_html', 'on_sale_badge_percentage_html'
         );
         foreach ($allowed_strings as $key) {
             if (isset($options[$key]) && !empty($options[$key])) {
@@ -128,32 +129,50 @@ class Main
         $query = "SELECT * FROM {$table_name}";
         global $wpdb;
         $rules = $wpdb->get_results($query);
-        $allowed_string = array('title', 'description');
+        if (empty($rules)) {
+            return;
+        }
+        $allowed_string = array('title', 'description', 'extra_data.discount_bar.badge_text', 'discount_data.cart_label',
+            'conditions.cart_coupon.custom_value');
         foreach ($rules as $rule) {
             if (!is_object($rule)) {
                 continue;
             }
-            $this->getBasicTranslation($rule, $allowed_string, $new_custom_strings);
+            foreach ($allowed_string as $key) {
+                if ($key == 'extra_data.discount_bar.badge_text') {
+                    $extra_data = isset($rule->extra_data) ? json_decode($rule->extra_data) : new \stdClass();
+                    $discount_bar = isset($extra_data->discount_bar) ? $extra_data->discount_bar : new \stdClass();
+                    $new_custom_strings[] = $discount_bar->badge_text;
+                } elseif ($key == 'discount_data.cart_label') {
+                    $discount_data = isset($rule->discount_data) ? json_decode($rule->discount_data) : new \stdClass();
+                    $new_custom_strings[] = $discount_data->cart_label;
+                } elseif ($key = 'conditions.cart_coupon.custom_value') {
+                    $conditions = isset($rule->conditions) ? json_decode($rule->conditions, true) : array();
+                    if (!empty($conditions)) {
+                        $this->getConditionStrings($conditions, $new_custom_strings);
+                    }
+                } elseif (isset($rule->$key) && !empty($rule->$key)) {
+                    $new_custom_strings[] = $rule->$key;
+                }
+            }
         }
-
     }
 
     /**
-     * Add custom strings.
+     * Get conditions strings.
      *
-     * @param object $object Rule object.
-     * @param array $allowed_strings Strings list.
-     * @param array $new_custom_strings Custom strings.
-     * @return \stdClass|void
+     * @param $conditions
+     * @param $new_custom_strings
+     * @return void
      */
-    function getBasicTranslation($object, $allowed_strings, &$new_custom_strings)
+    function getConditionStrings($conditions, &$new_custom_strings)
     {
-        if (!is_object($object) || !is_array($allowed_strings)) {
-            return new \stdClass();
+        if (empty($conditions) || !is_array($conditions)) {
+            return;
         }
-        foreach ($allowed_strings as $key) {
-            if (!in_array($key, $new_custom_strings) && isset($object->$key) && !empty($object->$key)) {
-                $new_custom_strings[] = $object->$key;
+        foreach ($conditions as $condition) {
+            if ($condition['type'] == 'cart_coupon' && is_array($condition['options']) && isset($condition['options']['custom_value'])) {
+                $new_custom_strings[] = $condition['options']['custom_value'];
             }
         }
     }
