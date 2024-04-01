@@ -135,7 +135,7 @@ class Main
         $allowed_string = array('title', 'description', 'extra_data.discount_bar.badge_text', 'discount_data.cart_label',
             'conditions.cart_coupon.custom_value', 'conditions.cart_subtotal.subtotal_promotion_message',
             'conditions.cart_items_quantity.cart_quantity_promotion_message');
-        // add bulk discount label,subtotal promotion message,item_qoautity.promotion_message,
+        // add bulk discount label,
         foreach ($rules as $rule) {
             if (!is_object($rule)) {
                 continue;
@@ -151,6 +151,11 @@ class Main
                 } elseif ($key == 'discount_data.cart_label') {
                     $discount_data = isset($rule->discount_data) ? json_decode($rule->discount_data) : new \stdClass();
                     $new_custom_strings[] = $discount_data->cart_label;
+                    if (isset($discount_data->ranges) && is_array($discount_data->ranges)) {
+                        foreach ($discount_data->ranges as $range) {
+                            $new_custom_strings[] = $range->label;
+                        }
+                    }
                 } elseif (in_array($key, array('conditions.cart_coupon.custom_value', 'conditions.cart_subtotal.subtotal_promotion_message',
                     'conditions.cart_items_quantity.cart_quantity_promotion_message'))) {
                     $conditions = isset($rule->conditions) ? json_decode($rule->conditions, true) : array();
