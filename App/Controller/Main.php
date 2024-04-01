@@ -103,7 +103,7 @@ class Main
         $options = get_option('wdr_settings');
         if (!is_array($options)) return;
         $allowed_strings = array('you_saved_text', 'table_title_column_name', 'table_discount_column_name', 'table_range_column_name',
-            'free_shipping_title', 'discount_label_for_combined_discounts', 'apply_cart_discount_as', 'show_strikeout_when', 'applied_rule_message',
+            'free_shipping_title', 'discount_label_for_combined_discounts', 'applied_rule_message',
             'on_sale_badge_html', 'on_sale_badge_percentage_html'
         );
         foreach ($allowed_strings as $key) {
@@ -132,8 +132,10 @@ class Main
         if (empty($rules)) {
             return;
         }
-        $allowed_string = array('title', 'extra_data.discount_bar.badge_text', 'discount_data.cart_label',
-            'conditions.cart_coupon.custom_value', 'description');
+        $allowed_string = array('title', 'description', 'extra_data.discount_bar.badge_text', 'discount_data.cart_label',
+            'conditions.cart_coupon.custom_value', 'conditions.cart_subtotal.subtotal_promotion_message',
+            'conditions.cart_items_quantity.cart_quantity_promotion_message');
+        // add bulk discount label,subtotal promotion message,item_qoautity.promotion_message,
         foreach ($rules as $rule) {
             if (!is_object($rule)) {
                 continue;
@@ -149,7 +151,8 @@ class Main
                 } elseif ($key == 'discount_data.cart_label') {
                     $discount_data = isset($rule->discount_data) ? json_decode($rule->discount_data) : new \stdClass();
                     $new_custom_strings[] = $discount_data->cart_label;
-                } elseif ($key = 'conditions.cart_coupon.custom_value') {
+                } elseif (in_array($key, array('conditions.cart_coupon.custom_value', 'conditions.cart_subtotal.subtotal_promotion_message',
+                    'conditions.cart_items_quantity.cart_quantity_promotion_message'))) {
                     $conditions = isset($rule->conditions) ? json_decode($rule->conditions, true) : array();
                     if (!empty($conditions)) {
                         $this->getConditionStrings($conditions, $new_custom_strings);
@@ -174,6 +177,10 @@ class Main
         foreach ($conditions as $condition) {
             if ($condition['type'] == 'cart_coupon' && is_array($condition['options']) && isset($condition['options']['custom_value'])) {
                 $new_custom_strings[] = $condition['options']['custom_value'];
+            } elseif ($condition['type'] == 'cart_subtotal' && is_array($condition['options']) && isset($condition['options']['subtotal_promotion_message'])) {
+                $new_custom_strings[] = $condition['options']['subtotal_promotion_message'];
+            } elseif ($condition['type'] == 'cart_items_quantity' && is_array($condition['options']) && isset($condition['options']['cart_quantity_promotion_message'])) {
+                $new_custom_strings[] = $condition['options']['cart_quantity_promotion_message'];
             }
         }
     }
