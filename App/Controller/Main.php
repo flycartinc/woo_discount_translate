@@ -132,13 +132,16 @@ class Main
         if (empty($rules)) {
             return;
         }
-        $allowed_string = array('title', 'description', 'extra_data.discount_bar.badge_text', 'discount_data.cart_label',
-            'conditions.cart_coupon.custom_value');
+        $allowed_string = array('title', 'extra_data.discount_bar.badge_text', 'discount_data.cart_label',
+            'conditions.cart_coupon.custom_value', 'description');
         foreach ($rules as $rule) {
             if (!is_object($rule)) {
                 continue;
             }
             foreach ($allowed_string as $key) {
+                if (isset($rule->$key)) {
+                    $new_custom_strings[] = $rule->$key;
+                }
                 if ($key == 'extra_data.discount_bar.badge_text') {
                     $extra_data = isset($rule->extra_data) ? json_decode($rule->extra_data) : new \stdClass();
                     $discount_bar = isset($extra_data->discount_bar) ? $extra_data->discount_bar : new \stdClass();
@@ -151,8 +154,6 @@ class Main
                     if (!empty($conditions)) {
                         $this->getConditionStrings($conditions, $new_custom_strings);
                     }
-                } elseif (isset($rule->$key) && !empty($rule->$key)) {
-                    $new_custom_strings[] = $rule->$key;
                 }
             }
         }
