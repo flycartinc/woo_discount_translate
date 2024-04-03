@@ -46,15 +46,6 @@ if (!function_exists('isDiscountRulesActive')) {
 }
 
 if (!isWoocommerceActive() || !isDiscountRulesActive()) return;
-
-if (!class_exists('\WDR\Core\Helpers\Plugin') && file_exists(WP_PLUGIN_DIR . '/woo-discount-rules/vendor/autoload.php')) {
-    require_once WP_PLUGIN_DIR . '/woo-discount-rules/vendor/autoload.php';
-} elseif (file_exists(WP_PLUGIN_DIR . '/woo-discount-rules-pro/vendor/autoload.php')) {
-    require_once WP_PLUGIN_DIR . '/woo-discount-rules-pro/vendor/autoload.php';
-}
-if (!class_exists('\WDR\Core\Helpers\Plugin')) {
-    return;
-}
 /**
  * Check discount rules plugin is latest.
  */
@@ -69,6 +60,16 @@ if (!function_exists('isWooDiscountLatestVersion')) {
     }
 }
 if (!isWooDiscountLatestVersion()) return;
+
+if (!class_exists('\WDR\Core\Helpers\Plugin') && file_exists(WP_PLUGIN_DIR . '/woo-discount-rules/vendor/autoload.php')) {
+    require_once WP_PLUGIN_DIR . '/woo-discount-rules/vendor/autoload.php';
+} elseif (file_exists(WP_PLUGIN_DIR . '/woo-discount-rules-pro/vendor/autoload.php')) {
+    require_once WP_PLUGIN_DIR . '/woo-discount-rules-pro/vendor/autoload.php';
+}
+if (!class_exists('\WDR\Core\Helpers\Plugin')) {
+    return;
+}
+
 
 defined('WDRT_PLUGIN_NAME') or define('WDRT_PLUGIN_NAME', 'Woo Discount Rules - Multi-Lingual Compatibility - Dynamic Strings');
 defined('WDRT_PLUGIN_VERSION') or define('WDRT_PLUGIN_VERSION', '1.0.0');
