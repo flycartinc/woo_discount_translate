@@ -147,13 +147,17 @@ class Main
                 if ($key == 'extra_data.discount_bar.badge_text') {
                     $extra_data = isset($rule->extra_data) ? json_decode($rule->extra_data) : new \stdClass();
                     $discount_bar = isset($extra_data->discount_bar) ? $extra_data->discount_bar : new \stdClass();
-                    $new_custom_strings[] = $discount_bar->badge_text;
+                    if (isset($discount_bar->badge_text)){
+                        $new_custom_strings[] = $discount_bar->badge_text;
+                    }
                 } elseif ($key == 'discount_data.cart_label') {
                     $discount_data = isset($rule->discount_data) ? json_decode($rule->discount_data) : new \stdClass();
-                    $new_custom_strings[] = $discount_data->cart_label;
+                    if (isset($discount_data->cart_label)){
+                        $new_custom_strings[] = $discount_data->cart_label;
+                    }
                     if (isset($discount_data->ranges) && is_array($discount_data->ranges)) {
                         foreach ($discount_data->ranges as $range) {
-                            $new_custom_strings[] = $range->label;
+                            if(isset($range->label)) $new_custom_strings[] = $range->label;
                         }
                     }
                 } elseif (in_array($key, array('conditions.cart_coupon.custom_value', 'conditions.cart_subtotal.subtotal_promotion_message',
@@ -214,11 +218,14 @@ class Main
             wp_send_json($result);
         }
         $domains = apply_filters('wdrt_dynamic_string_domain', array('woo-discount-rules'));
+        $main_obj = new Main();
         foreach ($domains as $domain) {
-            $new_custom_strings = (new Main())->getDynamicStrings($domain);
+            $new_custom_strings = $main_obj->getDynamicStrings($domain);
             if (!empty($new_custom_strings)) {
                 foreach ($new_custom_strings as $key) {
-                    do_action('wpml_register_single_string', $domain, md5($key), $key);
+                    if (function_exists('md5')){
+                        do_action('wpml_register_single_string', $domain, md5($key), $key);
+                    }
                 }
             }
         }
