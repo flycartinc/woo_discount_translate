@@ -88,8 +88,29 @@ class Main
         if ('woo-discount-rules' === $domain) {
             $this->getRuleStrings($new_custom_strings);
             $this->getSettingsStrings($new_custom_strings);
+            $this->getAddOnStrings($new_custom_strings);
         }
         return $new_custom_strings;
+    }
+
+    /**
+     * Add Discount rules add-ons strings.
+     *
+     * @param array $new_custom_strings Custom strings.
+     * @return void
+     */
+    function getAddOnStrings(&$new_custom_strings){
+        $allowed_strings =apply_filters('wdrt_addons_string_list' ,array(
+            "Woo Discount Translate","This add-on used to translate dynamic string for Woo Discount Rules and related add-on.",
+            "Woo wholesale price compatibility","This add-on used to give compatibility of woocommerce wholesale prices by rymerawebco.",
+            "Woo extra product compatibility","This add-on used to give compatibility of woocommerce extra product option by themehigh.",
+            "OnSale Page","Create On-sale Page products using rule based show the on-sale product.",
+            "Woo facebook product price compatibility","This add-on used to give compatibility of woocommerce facebook product prices by facebook.",
+            "Woo country based price compatibility","This add-on used to give compatibility of woocommerce country based prices by oscargare.",
+        ));
+        foreach ($allowed_strings as $key) {
+            $new_custom_strings[] = $key;
+        }
     }
 
     /**
