@@ -83,6 +83,12 @@ if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
 require __DIR__ . '/vendor/autoload.php';
 
 if (class_exists(\WDRT\App\Router::class)) {
+	$myUpdateChecker = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+		'https://github.com/flycartinc/woo_discount_translate',
+		__FILE__,
+		'woo-discount-translate'
+	);
+	$myUpdateChecker->getVcsApi()->enableReleaseAssets();
     $plugin = new \WDRT\App\Router();
     if (method_exists($plugin, 'init')) $plugin->init();
 }
