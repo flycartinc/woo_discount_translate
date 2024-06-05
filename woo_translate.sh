@@ -1,7 +1,7 @@
 echo "Auto Compress pack"
 current_dir="$PWD/"
 echo "Current Dir $current_dir"
-pack_folder="woo-discount-translate"
+pack_folder="wdr-translate"
 plugin_pack_folder="woo_discount_translate"
 folder_sperate="/"
 pack_compress_folder=$current_dir$pack_folder
@@ -22,7 +22,7 @@ copy_folder(){
   echo "Compress Dir $pack_compress_folder"
   from_folder="woo_discount_translate"
   from_folder_dir=$current_dir$from_folder
-  move_dir=("App" "i18n" "vendor" "Assets" "readme.txt" "woo-discount-translate.php")
+  move_dir=("App" "i18n" "vendor" "Assets" "readme.txt" "wdr-translate.php")
   if [ -d "$pack_compress_folder" ]
   then
       rm -r "$pack_folder"

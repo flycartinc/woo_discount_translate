@@ -8,11 +8,12 @@
  * Requires PHP:        5.6
  * Author:              Flycart
  * Author URI:          https://www.flycart.org
- * Slug:                woo-discount-translate
- * Text Domain:         woo-discount-translate
+ * Slug:                wdr-translate
+ * Text Domain:         wdr-translate
  * Domain path:         /i18n/languages/
  * License:             GPL v3 or later
  * License URI:         https://www.gnu.org/licenses/gpl-3.0.html
+ * Contributors:        Ilaiyaraja
  * WC requires at least: 4.3
  * WC tested up to:     8.0
  */
@@ -46,20 +47,6 @@ if (!function_exists('isDiscountRulesActive')) {
 }
 
 if (!isWoocommerceActive() || !isDiscountRulesActive()) return;
-/**
- * Check discount rules plugin is latest.
- */
-if (!function_exists('isWooDiscountLatestVersion')) {
-    function isWooDiscountLatestVersion()
-    {
-        $db_version = get_option('wdr_version', '');
-        if (defined('WDR_PLUGIN_VERSION') && !empty($db_version)) {
-            return (version_compare($db_version, WDR_PLUGIN_VERSION, '>='));
-        }
-        return false;
-    }
-}
-if (!isWooDiscountLatestVersion()) return;
 
 if (!class_exists('\WDR\Core\Helpers\Plugin') && file_exists(WP_PLUGIN_DIR . '/woo-discount-rules/vendor/autoload.php')) {
     require_once WP_PLUGIN_DIR . '/woo-discount-rules/vendor/autoload.php';
@@ -70,10 +57,24 @@ if (!class_exists('\WDR\Core\Helpers\Plugin')) {
     return;
 }
 
+/**
+ * Check discount rules plugin is latest.
+ */
+if (!function_exists('isWooDiscountLatestVersion')) {
+	function isWooDiscountLatestVersion()
+	{
+		$db_version = get_option('wdr_version', '');
+		if (!empty($db_version)) {
+			return (version_compare($db_version, '3.0.0', '>='));
+		}
+		return false;
+	}
+}
+if (!isWooDiscountLatestVersion()) return;
 
 defined('WDRT_PLUGIN_NAME') or define('WDRT_PLUGIN_NAME', 'Woo Discount Rules - Multi-Lingual Compatibility - Dynamic Strings');
 defined('WDRT_PLUGIN_VERSION') or define('WDRT_PLUGIN_VERSION', '1.0.0');
-defined('WDRT_PLUGIN_SLUG') or define('WDRT_PLUGIN_SLUG', 'woo-discount-translate');
+defined('WDRT_PLUGIN_SLUG') or define('WDRT_PLUGIN_SLUG', 'wdr-translate');
 defined('WDRT_PLUGIN_URL') or define('WDRT_PLUGIN_URL', plugin_dir_url(__FILE__));
 defined('WDRT_PLUGIN_PATH') or define('WDRT_PLUGIN_PATH', __DIR__ . '/');
 
@@ -86,10 +87,11 @@ if (class_exists(\WDRT\App\Router::class)) {
 	$myUpdateChecker = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
 		'https://github.com/flycartinc/woo_discount_translate',
 		__FILE__,
-		'woo-discount-translate'
+		'wdr-translate'
 	);
 	$myUpdateChecker->getVcsApi()->enableReleaseAssets();
-    $plugin = new \WDRT\App\Router();
+
+	$plugin = new \WDRT\App\Router();
     if (method_exists($plugin, 'init')) $plugin->init();
 }
 

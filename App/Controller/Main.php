@@ -16,7 +16,7 @@ class Main
      */
     public static function managePages($addon = '')
     {
-        if ($addon != 'woo_discount_translate') return;
+        if ($addon != 'translate') return;
         Util::renderTemplate(WDRT_PLUGIN_PATH . 'App/Views/Admin/main.php', array(
             'is_wpml_translate_string_available' => (new \WDR\Core\Helpers\Plugin())::isActive('wpml-string-translation/plugin.php')
         ));
@@ -32,11 +32,10 @@ class Main
         if (!current_user_can('manage_woocommerce')) {
             return;
         }
-        /*$suffix = '.min';
+        $suffix = '.min';
         if (defined('SCRIPT_DEBUG')) {
             $suffix = SCRIPT_DEBUG ? '' : '.min';
-        }*/
-        $suffix = '';
+        }
         remove_all_actions('admin_notices');
 
         wp_enqueue_style(WDR_PLUGIN_SLUG . '-alertify', WDR_PLUGIN_URL . 'assets/Admin/Css/alertify' . $suffix . '.css', array(), WDR_PLUGIN_VERSION . '&t=' . time());
@@ -225,17 +224,17 @@ class Main
         $result = array('success' => false, 'data' => array());
         $plugin = new \WDR\Core\Helpers\Plugin();
         if (!$plugin::isActive('wpml-string-translation/plugin.php')) {
-            $result['data']['message'] = __('WPML string translation plugin is not activated.', 'woo-discount-translate');
+            $result['data']['message'] = __('WPML string translation plugin is not activated.', 'wdr-translate');
             wp_send_json($result);
         }
         $input_helper = new \WDR\Core\Helpers\Input();
         $nonce = $input_helper::get('wdrt_nonce');
         if (!current_user_can('manage_woocommerce') || !wp_verify_nonce($nonce, 'wdrt_common_nonce')) {
-            $result['data']['message'] = __('Security check validation failed', 'woo-discount-translate');
+            $result['data']['message'] = __('Security check validation failed', 'wdr-translate');
             wp_send_json($result);
         }
         if (!has_action('wpml_register_single_string')) {
-            $result['data']['message'] = __('WPML translation action not found', 'woo-discount-translate');
+            $result['data']['message'] = __('WPML translation action not found', 'wdr-translate');
             wp_send_json($result);
         }
         $domains = apply_filters('wdrt_dynamic_string_domain', array('woo-discount-rules'));
@@ -251,7 +250,7 @@ class Main
             }
         }
         $result['success'] = true;
-        $result['data']['message'] = __('Update WPML translation successfully', 'woo-discount-translate');
+        $result['data']['message'] = __('Update WPML translation successfully', 'wdr-translate');
         wp_send_json($result);
     }
 }

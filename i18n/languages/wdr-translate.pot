@@ -3,50 +3,51 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Woo Discount Rules - Multi-Lingual Compatibility - Dynamic Strings 1.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-discount-translate\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo_discount_translate\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-01-25T14:42:32+05:30\n"
+"POT-Creation-Date: 2024-06-05T11:00:49+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.9.0\n"
-"X-Domain: woo-discount-translate\n"
+"X-Generator: WP-CLI 2.10.0\n"
+"X-Domain: wdr-translate\n"
 
 #. Plugin Name of the plugin
+#: wdr-translate.php
 msgid "Woo Discount Rules - Multi-Lingual Compatibility - Dynamic Strings"
 msgstr ""
 
 #. Plugin URI of the plugin
-msgid "https://www.wployalty.net"
-msgstr ""
-
-#. Description of the plugin
-msgid "This add-on used to translate dynamic string for Woo Discount Rules and related add-on"
-msgstr ""
-
-#. Author of the plugin
-msgid "Flycart"
-msgstr ""
-
 #. Author URI of the plugin
+#: wdr-translate.php
 msgid "https://www.flycart.org"
 msgstr ""
 
-#: App/Controller/Main.php:16
-msgid "Woo Discount Translate"
+#. Description of the plugin
+#: wdr-translate.php
+msgid "This add-on used to translate dynamic string for Woo Discount Rules and related add-on."
 msgstr ""
 
-#: App/Controller/Main.php:167
+#. Author of the plugin
+#: wdr-translate.php
+msgid "Flycart"
+msgstr ""
+
+#: App/Controller/Main.php:229
+msgid "WPML string translation plugin is not activated."
+msgstr ""
+
+#: App/Controller/Main.php:235
 msgid "Security check validation failed"
 msgstr ""
 
-#: App/Controller/Main.php:171
+#: App/Controller/Main.php:239
 msgid "WPML translation action not found"
 msgstr ""
 
-#: App/Controller/Main.php:184
+#: App/Controller/Main.php:255
 msgid "Update WPML translation successfully"
 msgstr ""
 
