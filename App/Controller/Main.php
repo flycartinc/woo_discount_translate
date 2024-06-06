@@ -36,6 +36,7 @@ class Main
         if (defined('SCRIPT_DEBUG')) {
             $suffix = SCRIPT_DEBUG ? '' : '.min';
         }
+	    $suffix ="";
         remove_all_actions('admin_notices');
 
         wp_enqueue_style(WDR_PLUGIN_SLUG . '-alertify', WDR_PLUGIN_URL . 'assets/Admin/Css/alertify' . $suffix . '.css', array(), WDR_PLUGIN_VERSION . '&t=' . time());
