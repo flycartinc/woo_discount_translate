@@ -29,7 +29,7 @@ defined('ABSPATH') or die;
                 <?php if (isset($is_wpml_translate_string_available) && $is_wpml_translate_string_available): ?>
                     <div class="wdrt_button">
                         <a class="wdrt_wpml_button" id="wdrt_update_wpml_string"
-                           style="background-color: #4747EB;padding: 8px 12px;color: #FFF;border-radius: 6px;"
+                           style="background-color: #0f172a;padding: 8px 12px;color: #FFF;border-radius: 6px;"
                         ><?php _e('Update Dynamic String for WPML', 'wdr-translate'); ?></a>
                     </div>
                 <?php endif; ?>

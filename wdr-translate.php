@@ -2,7 +2,7 @@
 /**
  * Plugin Name:         Dynamic string translate
  * Plugin URI:          https://www.flycart.org
- * Description:         This add-on useful to translate dynamic strings. Supported translation plugins: WPML and Loco Translate.
+ * Description:         Useful to translate dynamic strings. Supported translation plugins: WPML and Loco Translate.
  * Version:             1.0.0
  * Requires at least:   5.3
  * Requires PHP:        5.6

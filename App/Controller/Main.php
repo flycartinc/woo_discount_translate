@@ -32,6 +32,9 @@ class Main
         if (!current_user_can('manage_woocommerce')) {
             return;
         }
+	    if ( Input::get( 'page', '' ) != 'woo-discount-rules-addons' && Input::get( 'addon', '' ) != 'multi_currency' ) {
+		    return;
+	    }
         $suffix = '.min';
         if (defined('SCRIPT_DEBUG')) {
             $suffix = SCRIPT_DEBUG ? '' : '.min';
