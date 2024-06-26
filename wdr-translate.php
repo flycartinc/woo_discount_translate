@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:         Dynamic string translate
+ * Plugin Name:         Discount rules : Dynamic string translate compatibility
  * Plugin URI:          https://www.flycart.org
  * Description:         Useful to translate dynamic strings. Supported translation plugins: WPML and Loco Translate.
  * Version:             1.0.0
