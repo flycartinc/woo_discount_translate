@@ -22,7 +22,39 @@ class Main
         ));
     }
 
-    /**
+	/**
+	 * Run plugin activation scripts.
+	 */
+	public static function activate(){
+
+		$slug ="translate";
+		$active_addons = (array) get_option( 'wdr_active_addons', [] );
+		if ( ! in_array( $slug, $active_addons ) ) {
+			$active_addons[] = $slug;
+		}
+		update_option( 'wdr_active_addons', $active_addons );
+		return true;
+	}
+
+
+	/**
+	 * Run plugin activation scripts.
+	 */
+	public static function deactivate()
+	{
+		$slug ="translate";
+		$active_addons = (array) get_option( 'wdr_active_addons', [] );
+		if ( in_array( $slug, $active_addons ) ) {
+			if ( ( $key = array_search( $slug, $active_addons ) ) !== false ) {
+				unset( $active_addons[ $key ] );
+			}
+		}
+		update_option( 'wdr_active_addons', $active_addons );
+		return true;
+	}
+
+
+	/**
      * Loading site scripts and styles.
      *
      * @return void
@@ -32,7 +64,7 @@ class Main
         if (!current_user_can('manage_woocommerce')) {
             return;
         }
-	    if ( Input::get( 'page', '' ) != 'woo-discount-rules-addons' && Input::get( 'addon', '' ) != 'multi_currency' ) {
+	    if ( Input::get( 'page', '' ) != 'woo-discount-rules-addons' && Input::get( 'addon', '' ) != 'translate' ) {
 		    return;
 	    }
         $suffix = '.min';

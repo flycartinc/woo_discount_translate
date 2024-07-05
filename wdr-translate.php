@@ -45,7 +45,6 @@ if (!function_exists('isDiscountRulesActive')) {
         return in_array('woo-discount-rules-pro/woo-discount-rules-pro.php', $active_plugins, false) || in_array('woo-discount-rules/woo-discount-rules.php', $active_plugins, false);
     }
 }
-
 if (!isWoocommerceActive() || !isDiscountRulesActive()) return;
 
 if (!class_exists('\WDR\Core\Helpers\Plugin') && file_exists(WP_PLUGIN_DIR . '/woo-discount-rules/vendor/autoload.php')) {
@@ -70,11 +69,13 @@ if (!function_exists('isWooDiscountLatestVersion')) {
 		return false;
 	}
 }
+
 if (!isWooDiscountLatestVersion()) return;
 
 defined('WDRT_PLUGIN_NAME') or define('WDRT_PLUGIN_NAME', 'Dynamic String Translate');
 defined('WDRT_PLUGIN_VERSION') or define('WDRT_PLUGIN_VERSION', '1.0.0');
 defined('WDRT_PLUGIN_SLUG') or define('WDRT_PLUGIN_SLUG', 'wdr-translate');
+defined('WDRT_PLUGIN_FILE') || define('WDRT_PLUGIN_FILE', __FILE__);
 defined('WDRT_PLUGIN_URL') or define('WDRT_PLUGIN_URL', plugin_dir_url(__FILE__));
 defined('WDRT_PLUGIN_PATH') or define('WDRT_PLUGIN_PATH', __DIR__ . '/');
 
@@ -92,6 +93,8 @@ if (class_exists(\WDRT\App\Router::class)) {
 	$myUpdateChecker->getVcsApi()->enableReleaseAssets();
 
 	$plugin = new \WDRT\App\Router();
+	register_activation_hook(WDRT_PLUGIN_FILE, 'WDRT\App\Controller\Admin\Main::activate');
+	register_deactivation_hook(WDRT_PLUGIN_FILE, 'WDRT\App\Controller\Admin\Main::deactivate');
     if (method_exists($plugin, 'init')) $plugin->init();
 }
 
