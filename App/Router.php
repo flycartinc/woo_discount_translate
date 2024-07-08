@@ -13,7 +13,7 @@ class Router
     /**
      * Init plugin by adding hooks.
      */
-    function init()
+    static function init()
     {
         if (is_admin()) {
             remove_all_actions('admin_notices');
