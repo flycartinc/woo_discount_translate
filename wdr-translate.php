@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:         Discount rules : Dynamic string translate compatibility
+ * Plugin Name:         Discount rules : Translation compatibility
  * Plugin URI:          https://www.flycart.org
  * Description:         Useful to translate dynamic strings. Supported translation plugins: WPML and Loco Translate.
  * Version:             1.0.0
@@ -76,7 +76,7 @@ if ( ! isWooDiscountLatestVersion() ) {
 	return;
 }
 
-defined( 'WDRT_PLUGIN_NAME' ) or define( 'WDRT_PLUGIN_NAME', 'Dynamic String Translate' );
+defined( 'WDRT_PLUGIN_NAME' ) or define( 'WDRT_PLUGIN_NAME', 'Translation compatibility' );
 defined( 'WDRT_PLUGIN_VERSION' ) or define( 'WDRT_PLUGIN_VERSION', '1.0.0' );
 defined( 'WDRT_PLUGIN_SLUG' ) or define( 'WDRT_PLUGIN_SLUG', 'wdr-translate' );
 defined( 'WDRT_PLUGIN_FILE' ) || define( 'WDRT_PLUGIN_FILE', __FILE__ );
