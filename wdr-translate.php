@@ -19,6 +19,22 @@
  */
 
 defined( "ABSPATH" ) or die();
+
+if(!function_exists('wdr_v2_is_plugin_active')){
+	function wdr_v2_is_plugin_active($plugin_file){
+		$active_plugins = apply_filters('active_plugins', get_option('active_plugins', array()));
+		if (is_multisite()) {
+			$active_plugins = array_merge($active_plugins, get_site_option('active_sitewide_plugins', array()));
+		}
+		return in_array($plugin_file, $active_plugins) || array_key_exists($plugin_file, $active_plugins);
+
+	}
+}
+
+if(function_exists('get_option') && get_option('advanced_woo_discount_rules_load_version') == 'v2' && wdr_v2_is_plugin_active('woo-discount-rules/woo-discount-rules.php')) {
+	return;
+}
+
 /**
  * Check woocommerce plugin active or not.
  */
