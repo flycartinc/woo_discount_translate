@@ -21,6 +21,8 @@ class Router {
 
 		// WPML String Translation: a rule's / the settings' strings are registered when they are saved, wherever that happens
 		// (the rule editor, a duplicate, the settings screen, WP-CLI). The button below registers everything again.
+		// The texts a rule had before its save: those no rule or setting uses afterwards are taken out of WPML again.
+		add_filter( 'wdr_before_rule_save', [ Main::class, 'rememberRuleStrings' ], 10, 2 );
 		add_action( 'wdr_after_rule_save', [ Main::class, 'registerRuleStrings' ] );
 		add_action( 'wdr_after_rule_duplicate', [ Main::class, 'registerRuleStrings' ] );
 		add_action( 'add_option_wdr_settings', [ Main::class, 'registerSettingsStrings' ], 10, 2 );

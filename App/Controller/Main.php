@@ -19,6 +19,13 @@ defined( 'ABSPATH' ) || exit;
 class Main {
 
 	/**
+	 * Each rule's texts as they were before its save in this request, by rule id (rememberRuleStrings).
+	 *
+	 * @var array
+	 */
+	private static $strings_before_save = [];
+
+	/**
 	 * Run plugin activation scripts. Kept for backward compatibility; lifecycle logic lives in Setup.
 	 *
 	 * @return bool
@@ -164,6 +171,30 @@ class Main {
 		$new_custom_strings = [];
 		self::getStringsOfRule( $rule, $new_custom_strings );
 		self::registerWithWpml( $new_custom_strings );
+		self::unregisterUnused( array_diff( self::$strings_before_save[ (int) $rule_id ] ?? [], $new_custom_strings ) );
+		unset( self::$strings_before_save[ (int) $rule_id ] );
+	}
+
+	/**
+	 * Remember an existing rule's texts before it is saved (`wdr_before_rule_save` filter - the data passes unchanged), so
+	 * registerRuleStrings() can take out of WPML the texts the save replaced.
+	 *
+	 * @param array $post_data The rule data being saved.
+	 * @param int   $rule_id   Rule id; 0 for a new rule.
+	 *
+	 * @return array
+	 */
+	public static function rememberRuleStrings( $post_data, $rule_id ) {
+		if ( (int) $rule_id > 0 && self::canRegisterWithWpml() && class_exists( AdminRule::class ) ) {
+			$rule = AdminRule::getRule( (int) $rule_id );
+			if ( is_object( $rule ) ) {
+				$old_strings = [];
+				self::getStringsOfRule( $rule, $old_strings );
+				self::$strings_before_save[ (int) $rule_id ] = $old_strings;
+			}
+		}
+
+		return $post_data;
 	}
 
 	/**
@@ -171,18 +202,42 @@ class Main {
 	 * (`add_option_wdr_settings`, `update_option_wdr_settings` - the saved value is the second
 	 * argument of both).
 	 *
-	 * @param mixed $unused   The option name (add) or the old value (update).
-	 * @param mixed $settings The saved settings.
+	 * @param mixed $old_settings The option name (add) or the settings before the save (update).
+	 * @param mixed $settings     The saved settings.
 	 *
 	 * @return void
 	 */
-	public static function registerSettingsStrings( $unused, $settings ) {
+	public static function registerSettingsStrings( $old_settings, $settings ) {
 		if ( ! self::canRegisterWithWpml() || ! is_array( $settings ) ) {
 			return;
 		}
 		$new_custom_strings = [];
 		self::getSettingsStrings( $new_custom_strings, $settings );
 		self::registerWithWpml( $new_custom_strings );
+		if ( is_array( $old_settings ) ) {
+			$old_strings = [];
+			self::getSettingsStrings( $old_strings, $old_settings );
+			self::unregisterUnused( array_diff( $old_strings, $new_custom_strings ) );
+		}
+	}
+
+	/**
+	 * Take texts out of WPML String Translation (with their translations) unless a rule or the settings still use them -
+	 * a text two rules share stays while one of them keeps it. A trashed rule's texts count as used.
+	 *
+	 * @param array $strings Texts a save replaced.
+	 *
+	 * @return void
+	 */
+	private static function unregisterUnused( array $strings ) {
+		$strings = array_unique( array_filter( $strings ) );
+		if ( empty( $strings ) || ! function_exists( 'icl_unregister_string' ) ) {
+			return;
+		}
+		$in_use = self::getDynamicStrings( 'woo-discount-rules' );
+		foreach ( array_diff( $strings, $in_use ) as $string ) {
+			icl_unregister_string( 'woo-discount-rules', md5( $string ) );
+		}
 	}
 
 	/**
@@ -373,7 +428,12 @@ class Main {
 			}
 			$message_key = $message_key_by_type[ $type ];
 			if ( ! empty( $condition['options'][ $message_key ] ) ) {
-				$new_custom_strings[] = $condition['options'][ $message_key ];
+				$string = $condition['options'][ $message_key ];
+				// the cart shows a typed coupon code ("Coupon: %s") as WooCommerce formats it - lower case - and looks up that form
+				if ( 'cart_coupon' === $type && function_exists( 'wc_format_coupon_code' ) ) {
+					$string = wc_format_coupon_code( $string );
+				}
+				$new_custom_strings[] = $string;
 			}
 		}
 	}
