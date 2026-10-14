@@ -137,15 +137,76 @@ class Main {
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- wdrt_ is this addon's own public hook prefix
 		$domains = apply_filters( 'wdrt_dynamic_string_domain', [ 'woo-discount-rules' ] );
 		foreach ( $domains as $domain ) {
-			$new_custom_strings = self::getDynamicStrings( $domain );
-			foreach ( $new_custom_strings as $key ) {
-				do_action( 'wpml_register_single_string', $domain, md5( $key ), $key );
-			}
+			self::registerWithWpml( self::getDynamicStrings( $domain ), $domain );
 		}
 
 		$result['success']          = true;
 		$result['data']['message'] = __( 'Updated WPML translation strings successfully.', 'wdr-translate' );
 		wp_send_json( $result );
+	}
+
+	/**
+	 * WPML String Translation: register one rule's strings as it is saved or duplicated
+	 * (`wdr_after_rule_save`, `wdr_after_rule_duplicate`).
+	 *
+	 * @param int $rule_id Rule id.
+	 *
+	 * @return void
+	 */
+	public static function registerRuleStrings( $rule_id ) {
+		if ( ! self::canRegisterWithWpml() || ! class_exists( AdminRule::class ) ) {
+			return;
+		}
+		$rule = AdminRule::getRule( (int) $rule_id );
+		if ( ! is_object( $rule ) ) {
+			return;
+		}
+		$new_custom_strings = [];
+		self::getStringsOfRule( $rule, $new_custom_strings );
+		self::registerWithWpml( $new_custom_strings );
+	}
+
+	/**
+	 * WPML String Translation: register the settings' strings as they are saved
+	 * (`add_option_wdr_settings`, `update_option_wdr_settings` - the saved value is the second
+	 * argument of both).
+	 *
+	 * @param mixed $unused   The option name (add) or the old value (update).
+	 * @param mixed $settings The saved settings.
+	 *
+	 * @return void
+	 */
+	public static function registerSettingsStrings( $unused, $settings ) {
+		if ( ! self::canRegisterWithWpml() || ! is_array( $settings ) ) {
+			return;
+		}
+		$new_custom_strings = [];
+		self::getSettingsStrings( $new_custom_strings, $settings );
+		self::registerWithWpml( $new_custom_strings );
+	}
+
+	/**
+	 * Whether WPML String Translation is there to register strings with.
+	 *
+	 * @return bool
+	 */
+	private static function canRegisterWithWpml(): bool {
+		return Plugin::isWpmlStringTranslationActive() && has_action( 'wpml_register_single_string' );
+	}
+
+	/**
+	 * Register strings with WPML String Translation under the name WPML gives a gettext string
+	 * itself (`md5( text )`), so Discount Rules' `__( $text, 'woo-discount-rules' )` finds them.
+	 *
+	 * @param array  $strings Strings.
+	 * @param string $domain  Text domain.
+	 *
+	 * @return void
+	 */
+	private static function registerWithWpml( array $strings, string $domain = 'woo-discount-rules' ) {
+		foreach ( array_unique( array_filter( $strings ) ) as $string ) {
+			do_action( 'wpml_register_single_string', $domain, md5( $string ), $string );
+		}
 	}
 
 	/**
@@ -195,12 +256,13 @@ class Main {
 	/**
 	 * Add Discount Rules' own customizable settings strings (`wdr_settings` option).
 	 *
-	 * @param array $new_custom_strings Custom strings, by reference.
+	 * @param array      $new_custom_strings Custom strings, by reference.
+	 * @param array|null $options            The settings being saved; null = the stored ones.
 	 *
 	 * @return void
 	 */
-	private static function getSettingsStrings( array &$new_custom_strings ) {
-		$options = get_option( 'wdr_settings' );
+	private static function getSettingsStrings( array &$new_custom_strings, $options = null ) {
+		$options = null === $options ? get_option( 'wdr_settings' ) : $options;
 		if ( ! is_array( $options ) ) {
 			return;
 		}
@@ -237,37 +299,52 @@ class Main {
 		}
 
 		foreach ( $rules as $rule ) {
-			if ( ! is_object( $rule ) ) {
-				continue;
+			if ( is_object( $rule ) ) {
+				self::getStringsOfRule( $rule, $new_custom_strings );
 			}
-			if ( ! empty( $rule->title ) ) {
-				$new_custom_strings[] = $rule->title;
-			}
-			if ( ! empty( $rule->description ) ) {
-				$new_custom_strings[] = $rule->description;
-			}
+		}
+	}
 
-			$extra_data = ! empty( $rule->extra_data ) ? json_decode( $rule->extra_data ) : new \stdClass();
-			if ( ! empty( $extra_data->discount_bar->badge_text ) ) {
-				$new_custom_strings[] = $extra_data->discount_bar->badge_text;
-			}
+	/**
+	 * Add one rule's translatable strings (a row of the rules table).
+	 *
+	 * @param object $rule               Rule row.
+	 * @param array  $new_custom_strings Custom strings, by reference.
+	 *
+	 * @return void
+	 */
+	private static function getStringsOfRule( $rule, array &$new_custom_strings ) {
+		if ( ! empty( $rule->title ) ) {
+			$new_custom_strings[] = $rule->title;
+		}
+		if ( ! empty( $rule->description ) ) {
+			$new_custom_strings[] = $rule->description;
+		}
 
-			$discount_data = ! empty( $rule->discount_data ) ? json_decode( $rule->discount_data ) : new \stdClass();
-			if ( ! empty( $discount_data->cart_label ) ) {
-				$new_custom_strings[] = $discount_data->cart_label;
-			}
-			if ( ! empty( $discount_data->ranges ) && is_array( $discount_data->ranges ) ) {
-				foreach ( $discount_data->ranges as $range ) {
-					if ( ! empty( $range->label ) ) {
-						$new_custom_strings[] = $range->label;
-					}
+		$extra_data = ! empty( $rule->extra_data ) ? json_decode( $rule->extra_data ) : new \stdClass();
+		if ( ! empty( $extra_data->discount_bar->badge_text ) ) {
+			$new_custom_strings[] = $extra_data->discount_bar->badge_text;
+		}
+
+		$discount_data = ! empty( $rule->discount_data ) ? json_decode( $rule->discount_data ) : new \stdClass();
+		if ( ! empty( $discount_data->cart_label ) ) {
+			$new_custom_strings[] = $discount_data->cart_label;
+		}
+		// a cart rule's coupon label (a product rule's is cart_label)
+		if ( ! empty( $discount_data->label ) ) {
+			$new_custom_strings[] = $discount_data->label;
+		}
+		if ( ! empty( $discount_data->ranges ) && is_array( $discount_data->ranges ) ) {
+			foreach ( $discount_data->ranges as $range ) {
+				if ( ! empty( $range->label ) ) {
+					$new_custom_strings[] = $range->label;
 				}
 			}
+		}
 
-			if ( ! empty( $rule->conditions ) ) {
-				$conditions = json_decode( $rule->conditions, true );
-				self::getConditionStrings( (array) $conditions, $new_custom_strings );
-			}
+		if ( ! empty( $rule->conditions ) ) {
+			$conditions = json_decode( $rule->conditions, true );
+			self::getConditionStrings( (array) $conditions, $new_custom_strings );
 		}
 	}
 
